@@ -12,6 +12,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     // Danh sách 5 bài tập kèm widget đích
     final exercises = [
       {
@@ -31,7 +33,7 @@ class HomeScreen extends StatelessWidget {
         'screen': const AppThemeDemo(),
       },
       {
-        'title': 'Exercise 5 – Common UI Fixes',
+        'title': 'Exercise 5 – Common UI Errors',
         'screen': const CommonFixesDemo(),
       },
     ];
@@ -39,7 +41,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Lab 4 – Flutter UI Fundamentals',
+          'Lab 2 – Flutter UI Fundamentals',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: false,
@@ -64,9 +66,11 @@ class HomeScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF4F4F8),
+                color: isDark ? const Color(0xFF1E1E24) : const Color(0xFFF4F4F8),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black12),
+                border: Border.all(
+                  color: isDark ? Colors.white12 : Colors.black12,
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,16 +78,16 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: Text(
                       item['title'] as String,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black87,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right,
-                    color: Colors.black45,
+                    color: isDark ? Colors.white38 : Colors.black45,
                     size: 20,
                   ),
                 ],

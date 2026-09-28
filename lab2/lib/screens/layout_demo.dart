@@ -1,133 +1,141 @@
 import 'package:flutter/material.dart';
 
-/// Exercise 3: Layout Composition
-/// Minh họa các kỹ thuật bố cục giao diện trong Flutter:
-/// - Column: Xếp các widget theo chiều dọc
-/// - Row: Xếp các widget theo chiều ngang
-/// - Padding: Tạo khoảng đệm khoảng cách giữa các phần tử
-/// - ListView: Tạo danh sách cuộn động
+/// Model đại diện cho một bộ phim trong danh sách
+class MovieItem {
+  final String title;
+  final String description;
+
+  const MovieItem({
+    required this.title,
+    required this.description,
+  });
+}
+
+/// Exercise 3: Layout Basics – Column, Row, Padding, ListView
+/// Mục tiêu: Xây dựng bố cục giao diện dạng phân đoạn giống màn hình Home của ứng dụng thực tế.
+/// Các bước thực hiện:
+/// 1. Sử dụng Column để tạo các section theo chiều dọc (Tiêu đề "Now Playing" & Danh sách phim)
+/// 2. Thêm khoảng cách hợp lý bằng Padding và SizedBox (8, 12, 16 px)
+/// 3. Sử dụng ListView.builder hiển thị danh sách các tựa phim
+/// 4. Áp dụng chuẩn khoảng cách đồng nhất (spacing 8, 12, 16 px)
 class LayoutDemo extends StatelessWidget {
   const LayoutDemo({super.key});
 
+  // Danh sách các bộ phim mẫu theo đúng hình minh họa đề bài
+  final List<MovieItem> movies = const [
+    MovieItem(title: 'Avatar', description: 'Sample description'),
+    MovieItem(title: 'Inception', description: 'Sample description'),
+    MovieItem(title: 'Interstellar', description: 'Sample description'),
+    MovieItem(title: 'Joker', description: 'Sample description'),
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Exercise 3 – Layout Demo'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ----------------------------------------------------
-            // SECTION 1: Row Composition
-            // ----------------------------------------------------
-            const Text(
-              '1. Row Layout (Horizontal Alignment)',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.blue.shade200),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildSampleBox('Box 1', Colors.blue),
-                  _buildSampleBox('Box 2', Colors.indigo),
-                  _buildSampleBox('Box 3', Colors.teal),
-                ],
-              ),
-            ),
-            const Divider(height: 32),
+            // Khoảng cách trên cùng
+            const SizedBox(height: 16),
 
-            // ----------------------------------------------------
-            // SECTION 2: Column & Padding Composition
-            // ----------------------------------------------------
-            const Text(
-              '2. Column & Padding Layout',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.green.shade200),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    color: Colors.green.shade200,
-                    child: const Text('Row item 1 with Padding', textAlign: TextAlign.center),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    color: Colors.green.shade300,
-                    child: const Text('Row item 2 with Padding', textAlign: TextAlign.center),
-                  ),
-                ],
+            // Section 1: Tiêu đề "Now Playing" căn giữa
+            Center(
+              child: Text(
+                'Now Playing',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
               ),
             ),
-            const Divider(height: 32),
 
-            // ----------------------------------------------------
-            // SECTION 3: ListView Component
-            // ----------------------------------------------------
-            const Text(
-              '3. ListView (Scrollable List)',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            // Sử dụng ListView bên trong Column cần kèm shrinkWrap hoặc chiều cao cố định
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.deepPurple.shade100,
-                      child: Text('${index + 1}'),
+            // Khoảng cách 16px giữa Section Tiêu đề và Danh sách
+            const SizedBox(height: 16),
+
+            // Section 2: ListView.builder hiển thị danh sách các bộ phim
+            Expanded(
+              child: ListView.builder(
+                itemCount: movies.length,
+                itemBuilder: (context, index) {
+                  final movie = movies[index];
+                  final initialLetter = movie.title.isNotEmpty ? movie.title[0] : '';
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
                     ),
-                    title: Text('List Item #${index + 1}'),
-                    subtitle: Text('Sample description for layout item #${index + 1}'),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-                  ),
-                );
-              },
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF1E1E24)
+                          : const Color(0xFFF4F5F9),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        // CircleAvatar chứa chữ cái đầu của tên phim
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: isDark
+                              ? const Color(0xFF283593)
+                              : const Color(0xFFDCE2FF),
+                          child: Text(
+                            initialLetter,
+                            style: TextStyle(
+                              color: isDark
+                                  ? const Color(0xFF9FA8DA)
+                                  : const Color(0xFF4C5BB8),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+
+                        // Khoảng cách ngang 14px
+                        const SizedBox(width: 14),
+
+                        // Column chứa Tên phim và Mô tả
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                movie.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                movie.description,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isDark
+                                      ? Colors.white60
+                                      : Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Widget phụ trợ hiển thị các khối màu
-  Widget _buildSampleBox(String text, Color color) {
-    return Container(
-      width: 70,
-      height: 70,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }
